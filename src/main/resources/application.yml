@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/randomData
+  application:
+    name: randomData
+    version: 1.0.0
+server:
+  port: 80
