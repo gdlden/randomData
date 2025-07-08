@@ -2,9 +2,13 @@ package nl.hukss.randomdata.randomdata.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
+@TableName("personal_info")
 public class PersonalInfo {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -23,4 +27,5 @@ public class PersonalInfo {
      * 公司名称
      */
     private String companyName;
+    private String createTime;
 }
