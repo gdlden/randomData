@@ -11,4 +11,12 @@ public class PersonalInfoVo {
      * 身份证号码
      */
     private String idCard;
+    /**
+     * 企业社会信用代码
+     */
+    private String creditCode;
+    /**
+     * 公司名称
+     */
+    private String companyName;
 }
