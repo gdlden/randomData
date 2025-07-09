@@ -3,38 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>在线生成企业信用代码</title>
+    <script src="/js/jquery-3.7.1.min.js">
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#btnSub").click(function(){
+                $.ajax({url:"/randomData/getOne",success:function(result){
+                    console.log(result);
+                    if(result.status === 100) {
+                        const resD = result.data;
+                        $("#username").attr("value",resD.name);
+                        $("#mobile").attr("value",resD.mobile);
+                        $("#idcard").attr("value",resD.idCard);
+                        $("#creditCode").attr("value",resD.creditCode);
+                        $("#bankcard").attr("value",resD.bankcard);
+
+                    }
+                    }});
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="app" class="cs-display">
     <div class="main">
         <div class="item cc-display">
             <div class="text ec-display">姓名：</div>
-            <div class="s-item"><input type="text" class="s-input border-none"></div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="username"></div>
         </div>
         <div class="item cc-display">
             <div class="text ec-display">手机号：</div>
-            <div class="s-item"><input type="text" class="s-input border-none"></div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="mobile"></div>
         </div>
         <div class="item cc-display">
             <div class="text ec-display">身份证：</div>
-            <div class="s-item"><input type="text" class="s-input border-none"></div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="idcard"></div>
         </div>
         <div class="item cc-display">
             <div class="text ec-display">银行卡：</div>
-            <div class="s-item"><input type="text" class="s-input border-none"></div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="bankcard"></div>
         </div>
         <div class="item cc-display">
             <div class="text ec-display">统一信用代码：</div>
             <div class="s-item result cc-display">
+                <input type="text" class="s-input border-none" id="creditCode">
             </div>
         </div>
         <div class="item cc-display">
-            <button>随机生成</button>
+            <button id="btnSub">随机生成</button>
         </div>
     </div>
 </div>
-<script>
-
-</script>
 </body>
 </html>

@@ -19,4 +19,8 @@ public class PersonalInfoVo {
      * 公司名称
      */
     private String companyName;
+    /**
+     * 银行卡
+     */
+    private String bankcard;
 }

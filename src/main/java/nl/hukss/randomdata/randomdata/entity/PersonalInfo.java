@@ -28,4 +28,8 @@ public class PersonalInfo {
      */
     private String companyName;
     private String createTime;
+    /**
+     * 银行卡
+     */
+    private String bankcard;
 }
