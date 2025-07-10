@@ -11,9 +11,36 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ gitea.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+
+      - name: 设置jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
+      - name: 项目打包
+        run: mvn -B package
+
+      - name: 删除旧的jar包以及运行脚本
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd /root/mblog && ./run.sh stop && rm -rf target/**
+          host: ${{ secrets.HOST }}
+          username: root
+          port: 53595
+          privateKey: ${{ secrets.PRIVATE_KEY}}
+      - name: 上传jar包和启动脚本到服务器中
         run: |
-          ls ${{ gitea.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          echo "${{ secrets.PRIVATE_KEY }}" > ssh_key
+          chmod 600 ssh_key
+          scp -r -i ssh_key -P 53595 -o StrictHostKeyChecking=no ./target/mblog-latest.jar root@${{secrets.HOST}}:/root/mblog/target/
+          rm -rf ssh_key
+        shell: bash
+      - name: 启动项目
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd /root/mblog && ./run.sh start
+          host: ${{ secrets.HOST }}
+          username: root
+          port: 53595
+          privateKey: ${{ secrets.PRIVATE_KEY}}
