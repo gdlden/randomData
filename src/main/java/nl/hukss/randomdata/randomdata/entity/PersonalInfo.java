@@ -32,4 +32,5 @@ public class PersonalInfo {
      * 银行卡
      */
     private String bankcard;
+    private String userId;
 }

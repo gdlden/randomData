@@ -9,9 +9,11 @@ import nl.hukss.randomdata.randomdata.entity.PersonalInfo;
 import nl.hukss.randomdata.randomdata.service.PersonalInfoService;
 import nl.hukss.randomdata.randomdata.vo.PersonalInfoVo;
 import nl.hukss.randomdata.randomdata.vo.ResultData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,9 +24,11 @@ import java.util.Random;
 public class RandomDataController {
     @Resource
     private PersonalInfoService personalInfoService;
-    @GetMapping("/getOne")
-    public ResultData getOne(HttpServletRequest request) {
-        String remoteHost = request.getRemoteHost();
+    @GetMapping("/getOne/{userId}")
+    public ResultData getOne(@PathVariable("userId") String userId, HttpServletRequest request) {
+        if (StringUtils.isBlank(userId) || "0".equals(userId)) {
+            userId = request.getRemoteHost();
+        }
         PersonInfoSource personInfoSource = RandomSource.personInfoSource();
         PersonalInfoVo vo = new PersonalInfoVo();
         vo.setName(personInfoSource.randomChineseName());
@@ -41,6 +45,7 @@ public class RandomDataController {
         vo.setBankcard(RandomSource.financialSource().randomDebitCardNo());
         PersonalInfo personalInfo = new PersonalInfo();
         BeanUtils.copyProperties(vo,personalInfo);
+        personalInfo.setUserId(userId);
         boolean saved = personalInfoService.save(personalInfo);
         return ResultData.success(vo);
     }

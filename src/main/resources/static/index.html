@@ -5,23 +5,36 @@
     <title>在线生成企业信用代码</title>
     <script src="/js/jquery-3.7.1.min.js">
     </script>
+    <script src="/js/iife.min.js">
+    </script>
     <script>
         $(document).ready(function(){
             $("#btnSub").click(function(){
-                $.ajax({url:"/randomData/getOne",success:function(result){
-                    console.log(result);
-                    if(result.status === 100) {
-                        const resD = result.data;
-                        $("#username").attr("value",resD.name);
-                        $("#mobile").attr("value",resD.mobile);
-                        $("#idcard").attr("value",resD.idCard);
-                        $("#creditCode").attr("value",resD.creditCode);
-                        $("#bankcard").attr("value",resD.bankcard);
+                const fpPromise = FingerprintJS.load();
+                const then = fpPromise
+                    .then(fp => fp.get())
+                    .then(result =>
+                    {
+                        console.log(result.visitorId);
+                        let userId = "0";
+                        userId = result.visitorId;
+                        $.ajax({url:"/randomData/getOne/"+userId,success:function(result){
+                                console.log(result);
+                                if(result.status === 100) {
+                                    const resD = result.data;
+                                    $("#username").attr("value",resD.name);
+                                    $("#mobile").attr("value",resD.mobile);
+                                    $("#idcard").attr("value",resD.idCard);
+                                    $("#creditCode").attr("value",resD.creditCode);
+                                    $("#bankcard").attr("value",resD.bankcard);
 
-                    }
-                    }});
+                                }
+                            }});
+                    });
             });
         });
+    </script>
+    <script>
     </script>
 </head>
 <body>
