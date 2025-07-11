@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="随机数据,统一社会信用代码">
+    <meta name="description" content="基于https://github.com/yindz/common-random实现的随机企业信用信息生成，包含手机号，电话号码，统一社会信用代码等">
+    <title>在线统一社会信用代码</title>
+    <script src="/js/jquery-3.7.1.min.js">
+    </script>
+    <script src="/js/iife.min.js">
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#btnSub").click(function(){
+                const fpPromise = FingerprintJS.load();
+                const then = fpPromise
+                    .then(fp => fp.get())
+                    .then(result =>
+                    {
+                        console.log(result.visitorId);
+                        let userId = "0";
+                        userId = result.visitorId;
+                        $.ajax({url:"/randomData/getOne/"+userId,success:function(result){
+                                console.log(result);
+                                if(result.status === 100) {
+                                    const resD = result.data;
+                                    $("#username").attr("value",resD.name);
+                                    $("#mobile").attr("value",resD.mobile);
+                                    $("#idcard").attr("value",resD.idCard);
+                                    $("#creditCode").attr("value",resD.creditCode);
+                                    $("#bankcard").attr("value",resD.bankcard);
+
+                                }
+                            }});
+                    });
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="app" class="cs-display">
+    <div class="main">
+        <div class="item cc-display">
+            <div class="text ec-display">姓名：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="username"></div>
+        </div>
+        <div class="item cc-display">
+            <div class="text ec-display">手机号：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="mobile"></div>
+        </div>
+        <div class="item cc-display">
+            <div class="text ec-display">身份证：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="idcard"></div>
+        </div>
+        <div class="item cc-display">
+            <div class="text ec-display">银行卡：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="bankcard"></div>
+        </div>
+        <div class="item cc-display">
+            <div class="text ec-display">统一信用代码：</div>
+            <div class="s-item result cc-display">
+                <input type="text" class="s-input border-none" id="creditCode">
+            </div>
+        </div>
+        <div class="item cc-display">
+            <button id="btnSub">随机生成</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

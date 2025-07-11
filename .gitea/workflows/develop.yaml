@@ -1,0 +1,46 @@
+name: 构建代码并发布到远程服务器
+run-name: ${{ gitea.actor }} is testing out Gitea Actions 🚀
+on: [push]
+
+jobs:
+  Explore-Gitea-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ gitea.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by Gitea!"
+      - run: echo "🔎 The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: 设置jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: 项目打包
+        run: mvn -B package
+
+      - name: 删除旧的jar包以及运行脚本
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd /root/mblog && ./run.sh stop && rm -rf target/**
+          host: ${{ secrets.HOST }}
+          username: root
+          port: 22
+          privateKey: ${{ secrets.PRIVATE_KEY}}
+      - name: 上传jar包和启动脚本到服务器中
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ssh_key
+          chmod 600 ssh_key
+          scp -r -i ssh_key -P 22 -o StrictHostKeyChecking=no ./target/mblog-latest.jar root@${{secrets.HOST}}:/root/mblog/target/
+          rm -rf ssh_key
+        shell: bash
+      - name: 启动项目
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd /root/mblog && ./run.sh start
+          host: ${{ secrets.HOST }}
+          username: root
+          port: 53595
+          privateKey: ${{ secrets.PRIVATE_KEY}}
