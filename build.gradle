@@ -25,6 +25,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.github.yindz/common-random
     implementation("io.github.yindz:common-random:1.1.0")
     implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.12'
+    // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.58")
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
