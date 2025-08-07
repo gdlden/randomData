@@ -1,11 +1,14 @@
 package nl.hukss.randomdata.randomdata.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.github.yindz.random.RandomSource;
 import io.github.yindz.random.constant.Province;
 import io.github.yindz.random.source.PersonInfoSource;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import nl.hukss.randomdata.randomdata.entity.Company;
 import nl.hukss.randomdata.randomdata.entity.PersonalInfo;
+import nl.hukss.randomdata.randomdata.service.CompanyService;
 import nl.hukss.randomdata.randomdata.service.PersonalInfoService;
 import nl.hukss.randomdata.randomdata.vo.PersonalInfoVo;
 import nl.hukss.randomdata.randomdata.vo.ResultData;
@@ -24,6 +27,8 @@ import java.util.Random;
 public class RandomDataController {
     @Resource
     private PersonalInfoService personalInfoService;
+    @Resource
+    private CompanyService companyService;
     @GetMapping("/getOne/{userId}")
     public ResultData getOne(@PathVariable("userId") String userId, HttpServletRequest request) {
         if (StringUtils.isBlank(userId) || "0".equals(userId)) {
@@ -40,13 +45,20 @@ public class RandomDataController {
         }
         vo.setMobile(personInfoSource.randomChineseMobile());
         vo.setIdCard(personInfoSource.randomMaleIdCard(Province.CQ,18,50));
-        vo.setCreditCode(RandomSource.otherSource().randomSocialCreditCode());
+        Company one = companyService.getOne(Wrappers.lambdaQuery(Company.class)
+                .isNull(Company::getPersonalInfoId)
+                .last("LIMIT 1"));
+//        vo.setCreditCode(RandomSource.otherSource().randomSocialCreditCode());
+        vo.setCreditCode(one.getCode());
         vo.setCompanyName(RandomSource.otherSource().randomCompanyName(Province.CQ));
         vo.setBankcard(RandomSource.financialSource().randomDebitCardNo());
         PersonalInfo personalInfo = new PersonalInfo();
         BeanUtils.copyProperties(vo,personalInfo);
         personalInfo.setUserId(userId);
         boolean saved = personalInfoService.save(personalInfo);
+        if (saved) {
+            companyService.updateById(new Company().setId(one.getId()).setPersonalInfoId(personalInfo.getId()));
+        }
         return ResultData.success(vo);
     }
 }

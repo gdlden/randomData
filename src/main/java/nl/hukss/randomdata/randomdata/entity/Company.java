@@ -23,4 +23,5 @@ public class Company {
     private String city;
     private String address;
     private String year;
+    private Long personalInfoId;
 }
