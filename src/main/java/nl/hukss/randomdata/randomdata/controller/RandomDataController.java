@@ -52,6 +52,9 @@ public class RandomDataController {
         vo.setCreditCode(one.getCode());
         vo.setCompanyName(RandomSource.otherSource().randomCompanyName(Province.CQ));
         vo.setBankcard(RandomSource.financialSource().randomDebitCardNo());
+        vo.setProvince(one.getProvince());
+        vo.setCity(one.getCity());
+        vo.setAddress(one.getAddress());
         PersonalInfo personalInfo = new PersonalInfo();
         BeanUtils.copyProperties(vo,personalInfo);
         personalInfo.setUserId(userId);

@@ -23,4 +23,16 @@ public class PersonalInfoVo {
      * 银行卡
      */
     private String bankcard;
+    /**
+     * 省份
+     */
+    private String province;
+    /**
+     * 城市
+     */
+    private String city;
+    /**
+     * 详细地址
+     */
+    private String address;
 }
