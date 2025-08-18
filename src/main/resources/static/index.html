@@ -38,6 +38,24 @@
                             }});
                     });
             });
+
+            $("#getCode").click(function () {
+                const req = $("#fileInput").val();
+                const reqMap = {
+                    base64Image: req
+                }
+                console.log(req)
+                $.ajax({url: "/randomData/getImageCode",
+                    data: JSON.stringify(reqMap),
+                    type: "POST",
+                    dataType: "json",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    success:function (res) {
+                    $("#resCode").attr("value",res.data);
+                    }})
+            });
         });
     </script>
     <style>
@@ -92,6 +110,20 @@
         </div>
         <div class="item cc-display">
             <button id="btnSub">随机生成</button>
+        </div>
+
+
+        <div class="item cc-display">
+            <div class="text ec-display">文件地址：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="fileInput"></div>
+        </div>
+        <div class="item cc-display">
+            <div class="text ec-display">识别结果：</div>
+            <div class="s-item"><input type="text" class="s-input border-none" id="resCode"></div>
+        </div>
+
+        <div>
+            <button id="getCode">获取验证码</button>
         </div>
     </div>
 </div>

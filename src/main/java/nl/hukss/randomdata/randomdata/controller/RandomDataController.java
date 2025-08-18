@@ -15,11 +15,12 @@ import nl.hukss.randomdata.randomdata.vo.ResultData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -63,5 +64,24 @@ public class RandomDataController {
             companyService.updateById(new Company().setId(one.getId()).setPersonalInfoId(personalInfo.getId()));
         }
         return ResultData.success(vo);
+    }
+    @PostMapping("/getImageCode")
+    public ResultData getImageCode(@RequestBody Map<String,String> reqMap) throws IOException {
+        String fileBase64 = reqMap.get("base64Image");
+        String base64Image = fileBase64.substring(fileBase64.indexOf(",") + 1);
+//        System.out.println(base64Image);
+        String[] args1 = new String[] {
+                "python",
+                "C:\\Users\\hukss\\Documents\\code\\ddddocrDemo\\main.py",
+                base64Image
+        };
+        Process proc = Runtime.getRuntime().exec(args1);
+        BufferedReader in = new BufferedReader((new InputStreamReader(proc.getInputStream())));
+        String line = null;
+        while ((line = in.readLine()) != null) {
+            System.out.println(line);
+        }
+        in.close();
+        return ResultData.success(line);
     }
 }
