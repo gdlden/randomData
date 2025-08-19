@@ -75,19 +75,22 @@ public class RandomDataController {
         String base64Image = fileBase64.substring(fileBase64.indexOf(",") + 1);
 //        System.out.println(base64Image);
         String[] args1 = new String[] {
-                "python",
+                "C:\\Users\\hukss\\.pyenv\\pyenv-win\\versions\\3.12.10\\python.exe",
                 "-u",
                 "C:\\Users\\hukss\\Documents\\code\\ddddocrDemo\\main.py",
                 base64Image
         };
         Process proc = Runtime.getRuntime().exec(args1);
+        int i = proc.waitFor();
+        if (i != 0) {
+            throw new RuntimeException("Python script exited with code " + i + ": " );
+        }
         String err = IOUtils.toString(proc.getErrorStream(), StandardCharsets.UTF_8);
         if (StringUtils.isNotBlank(err)) {
             System.out.println("err:"+err);
         }
         String res = IOUtils.toString(proc.getInputStream(), StandardCharsets.UTF_8);
         System.out.println(res);
-        execPy();
         return ResultData.success(res);
     }
 
