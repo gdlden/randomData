@@ -72,13 +72,13 @@ public class RandomDataController {
     @PostMapping("/getImageCode")
     public ResultData getImageCode(@RequestBody Map<String,String> reqMap) throws IOException, InterruptedException {
         String fileBase64 = reqMap.get("base64Image");
-        String base64Image = fileBase64.substring(fileBase64.indexOf(",") + 1);
+//        String base64Image = fileBase64.substring(fileBase64.indexOf(",") + 1);
 //        System.out.println(base64Image);
         String[] args1 = new String[] {
                 "C:\\Users\\hukss\\.pyenv\\pyenv-win\\versions\\3.12.10\\python.exe",
                 "-u",
                 "C:\\Users\\hukss\\Documents\\code\\ddddocrDemo\\main.py",
-                base64Image
+                fileBase64
         };
         Process proc = Runtime.getRuntime().exec(args1);
         int i = proc.waitFor();
