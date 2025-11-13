@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("companys")
+@TableName("companies")
 public class Company {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
