@@ -30,6 +30,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // https://mvnrepository.com/artifact/org.bytedeco/javacv
+    implementation("org.bytedeco:javacv:1.5.9")
 }
 
 tasks.named('test') {
