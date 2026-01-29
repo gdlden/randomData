@@ -38,6 +38,9 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    implementation("com.h2database:h2")
+    implementation("com.github.fppt:jedis-mock")
+
 }
 
 tasks.named('test') {
