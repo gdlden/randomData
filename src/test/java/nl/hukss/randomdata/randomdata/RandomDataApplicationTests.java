@@ -1,53 +1,109 @@
 package nl.hukss.randomdata.randomdata;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Resource;
 import nl.hukss.randomdata.randomdata.entity.Company;
 import nl.hukss.randomdata.randomdata.service.CompanyService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@Testcontainers
 @SpringBootTest
 class RandomDataApplicationTests {
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+
+    @Resource
+    private JdbcTemplate jdbcTemplate;
+
     @Resource
     private CompanyService companyService;
+
+    @BeforeEach
+    void setUpSchema() {
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS companies (
+                    id BIGSERIAL PRIMARY KEY,
+                    name VARCHAR(255),
+                    code VARCHAR(255),
+                    registration_day VARCHAR(255),
+                    character VARCHAR(255),
+                    legal_representative VARCHAR(255),
+                    capital VARCHAR(255),
+                    business_scope TEXT,
+                    province VARCHAR(255),
+                    city VARCHAR(255),
+                    address VARCHAR(255),
+                    year VARCHAR(32),
+                    personal_info_id BIGINT
+                )
+                """);
+        jdbcTemplate.execute("TRUNCATE TABLE companies RESTART IDENTITY");
+    }
 
     @Test
     void contextLoads() {
     }
-    @Test
-    public void addData() throws IOException {
-        File file = new File("C:\\Users\\hukss\\Documents\\code\\-\\Enterprise-Registration-Data\\json");
-        File[] files = file.listFiles();
-        for (File f : files) {
-            String year = f.getName();
-            File[] files1 = f.listFiles();
-            for (File f1 : files1) {
-                String jsonString = FileUtils.readFileToString(f1, StandardCharsets.UTF_8);
-                JSONObject jsonObject = JSONObject.parseObject(jsonString);
-                JSONArray dataList = jsonObject.getJSONArray("erDataList");
-                for (Object o : dataList) {
-                    String data = o.toString();
-                    if (StringUtils.isNotBlank(data)) {
-                        Company company = JSONObject.parseObject(data, Company.class);
-                        company.setYear(year);
-                        companyService.save(company);
-                    }
 
-                }
-            }
-        }
+    @Test
+    void shouldCompleteCrudOnRealPostgres() {
+        Company company = new Company()
+                .setName("TC Demo Co.")
+                .setCode("TC-001")
+                .setCity("Shanghai")
+                .setProvince("Shanghai")
+                .setYear("2026");
+
+        assertThat(companyService.save(company)).isTrue();
+        assertThat(company.getId()).isNotNull();
+
+        Company created = companyService.getById(company.getId());
+        assertThat(created).isNotNull();
+        assertThat(created.getName()).isEqualTo("TC Demo Co.");
+        assertThat(created.getCode()).isEqualTo("TC-001");
+
+        created.setName("TC Demo Co. Updated");
+        created.setCity("Hangzhou");
+        assertThat(companyService.updateById(created)).isTrue();
+
+        Company updated = companyService.getById(created.getId());
+        assertThat(updated).isNotNull();
+        assertThat(updated.getName()).isEqualTo("TC Demo Co. Updated");
+        assertThat(updated.getCity()).isEqualTo("Hangzhou");
+
+        assertThat(companyService.removeById(updated.getId())).isTrue();
+        assertThat(companyService.getById(updated.getId())).isNull();
     }
 
+    @Test
+    void shouldQueryByConditionOnRealPostgres() {
+        Company c1 = new Company().setName("Alpha").setCode("TC-Q-1").setCity("Shanghai").setYear("2026");
+        Company c2 = new Company().setName("Beta").setCode("TC-Q-2").setCity("Beijing").setYear("2026");
+        Company c3 = new Company().setName("Gamma").setCode("TC-Q-3").setCity("Shanghai").setYear("2025");
+
+        assertThat(companyService.save(c1)).isTrue();
+        assertThat(companyService.save(c2)).isTrue();
+        assertThat(companyService.save(c3)).isTrue();
+
+        Company shanghai2026 = companyService.lambdaQuery()
+                .eq(Company::getCity, "Shanghai")
+                .eq(Company::getYear, "2026")
+                .one();
+        assertThat(shanghai2026).isNotNull();
+        assertThat(shanghai2026.getCode()).isEqualTo("TC-Q-1");
+
+        long shanghaiCount = companyService.lambdaQuery()
+                .eq(Company::getCity, "Shanghai")
+                .count();
+        assertThat(shanghaiCount).isEqualTo(2);
+    }
 }

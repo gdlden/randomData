@@ -29,6 +29,9 @@ dependencies {
     implementation("com.alibaba.fastjson2:fastjson2:2.0.58")
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // https://mvnrepository.com/artifact/org.bytedeco/javacv
     implementation("org.bytedeco:javacv:1.5.9")
@@ -36,13 +39,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security:3.3.4")
     // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("com.h2database:h2")
-    implementation("com.github.fppt:jedis-mock")
+//    implementation("com.github.fppt:jedis-mock")
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    // Default to the team's remote Docker daemon; allow env override when needed.
+    environment 'DOCKER_HOST', System.getenv('DOCKER_HOST') ?: 'tcp://10.35.11.202:2375'
 }

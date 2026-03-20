@@ -23,15 +23,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public String login(User user) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
-// 从数据库中对比查找，如果找到了会返回一个带有认证的封装后的用户，否则会报错，自动处理。（这里我们假设我们配置的security是基于数据库查找的）
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
-// 获取认证后的用户
-        User userDb = (User ) authenticate.getPrincipal();	// 如果强制类型转换报错的话，可以用我们实现的 `UserDetailsImpl` 类中的 getUser 方法了
+        Object principal = authenticate.getPrincipal();
+        User userDb;
+        if (principal instanceof UserDetailsImpl loginUser) {
+            userDb = loginUser.getUser();
+        } else {
+            userDb = (User) principal;
+        }
 
-        String jwt = JwtUtil.createJWT(userDb.getId().toString());
-        return jwt;
+        return JwtUtil.createJWT(userDb.getId().toString());
     }
 }
