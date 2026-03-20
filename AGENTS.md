@@ -23,6 +23,7 @@
 - 包名全小写；类名 `PascalCase`；方法/字段 `camelCase`；常量 `UPPER_SNAKE_CASE`。
 - 保持分层职责清晰：Controller 不直接访问数据库；Mapper 负责数据访问；Service 承载业务逻辑。
 - 新增返回结构优先复用现有模式（如 `ResultData`、`ReturnCode`）。
+- 不要在代码中编写啰嗦的注释
 
 ## 测试要求
 - 测试框架：Spring Boot Test + JUnit Jupiter。
