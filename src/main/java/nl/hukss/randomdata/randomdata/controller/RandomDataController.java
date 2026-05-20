@@ -60,6 +60,7 @@ public class RandomDataController {
         vo.setProvince(one.getProvince());
         vo.setCity(one.getCity());
         vo.setAddress(one.getAddress());
+        vo.setBusinessScope(one.getBusinessScope());
         PersonalInfo personalInfo = new PersonalInfo();
         BeanUtils.copyProperties(vo,personalInfo);
         personalInfo.setUserId(userId);

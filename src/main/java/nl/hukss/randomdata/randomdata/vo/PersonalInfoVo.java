@@ -35,4 +35,8 @@ public class PersonalInfoVo {
      * 详细地址
      */
     private String address;
+    /**
+     * 经营范围
+     */
+    private String businessScope;
 }
