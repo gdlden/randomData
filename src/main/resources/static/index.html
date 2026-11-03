@@ -1,136 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="keywords" content="随机数据,统一社会信用代码">
-    <meta name="description" content="基于https://github.com/yindz/common-random实现的随机企业信用信息生成，包含手机号，电话号码，统一社会信用代码等">
-    <title>在线统一社会信用代码</title>
-    <script src="/js/jquery-3.7.1.min.js">
-    </script>
-    <script src="/js/iife.min.js">
-    </script>
-    <script>
-        $(document).ready(function(){
-            $("#btnSub").click(function(){
-                const fpPromise = FingerprintJS.load();
-                const then = fpPromise
-                    .then(fp => fp.get())
-                    .then(result =>
-                    {
-                        console.log(result.visitorId);
-                        let userId = "0";
-                        userId = result.visitorId;
-                        $.ajax({url:"/randomData/getOne/"+userId,success:function(result){
-                                console.log(result);
-                                if(result.status === 100) {
-                                    const resD = result.data;
-                                    $("#username").attr("value",resD.name);
-                                    $("#mobile").attr("value",resD.mobile);
-                                    $("#idcard").attr("value",resD.idCard);
-                                    $("#creditCode").attr("value",resD.creditCode);
-                                    $("#bankcard").attr("value",resD.bankcard);
-                                    $("#companyName").attr("value",resD.companyName)
-                                    $("#province").attr("value",resD.province)
-                                    $("#city").attr("value",resD.city)
-                                    $("#address").attr("value",resD.address)
-                                    $("#businessScope").attr("value",resD.businessScope)
-
-                                }
-                            }});
-                    });
-            });
-
-            $("#getCode").click(function () {
-                const req = $("#fileInput").val();
-                const reqMap = {
-                    base64Image: req
-                }
-                console.log(req)
-                $.ajax({url: "/randomData/getImageCode",
-                    data: JSON.stringify(reqMap),
-                    type: "POST",
-                    dataType: "json",
-                    headers: {
-                    "Content-Type": "application/json"
-                    },
-                    success:function (res) {
-                    $("#resCode").attr("value",res.data);
-                    }})
-            });
-        });
-    </script>
-    <style>
-        #app {
-            /*width: 1024px;*/
-            margin: 0  auto;
-            height: auto;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-<div id="app" class="cs-display">
-    <div class="main">
-        <div class="item cc-display">
-            <div class="text ec-display">姓名：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="username"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">手机号：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="mobile"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">身份证：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="idcard"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">银行卡：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="bankcard"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">公司名称：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="companyName"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">经营范围：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="businessScope"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">公司所在省份：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="province"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">公司所在城市：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="city"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">公司所在详细地址：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="address"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">统一信用代码：</div>
-            <div class="s-item result cc-display">
-                <input type="text" class="s-input border-none" id="creditCode">
-            </div>
-        </div>
-        <div class="item cc-display">
-            <button id="btnSub">随机生成</button>
-        </div>
-
-
-        <div class="item cc-display">
-            <div class="text ec-display">文件地址：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="fileInput"></div>
-        </div>
-        <div class="item cc-display">
-            <div class="text ec-display">识别结果：</div>
-            <div class="s-item"><input type="text" class="s-input border-none" id="resCode"></div>
-        </div>
-
-        <div>
-            <button id="getCode">获取验证码</button>
-        </div>
-    </div>
-</div>
-</body>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="生成结构完整的企业与人员测试数据" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23000'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-size='32' font-weight='700' fill='white'%3ER%3C/text%3E%3C/svg%3E" />
+    <title>Random Data · 测试数据生成器</title>
+    <script type="module" crossorigin src="/assets/index-Bh85LeD6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DhnfqYgu.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

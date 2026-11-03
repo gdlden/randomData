@@ -10,6 +10,7 @@ import nl.hukss.randomdata.randomdata.entity.Company;
 import nl.hukss.randomdata.randomdata.entity.PersonalInfo;
 import nl.hukss.randomdata.randomdata.service.CompanyService;
 import nl.hukss.randomdata.randomdata.service.PersonalInfoService;
+import nl.hukss.randomdata.randomdata.util.PropertyNumberGenerator;
 import nl.hukss.randomdata.randomdata.vo.PersonalInfoVo;
 import nl.hukss.randomdata.randomdata.vo.ResultData;
 import org.apache.commons.io.IOUtils;
@@ -61,6 +62,8 @@ public class RandomDataController {
         vo.setCity(one.getCity());
         vo.setAddress(one.getAddress());
         vo.setBusinessScope(one.getBusinessScope());
+        vo.setFactoryBuildingNo(PropertyNumberGenerator.randomFactoryBuildingNo());
+        vo.setPropertyCertificateNo(PropertyNumberGenerator.randomPropertyCertificateNo(one.getProvince(), one.getCity()));
         PersonalInfo personalInfo = new PersonalInfo();
         BeanUtils.copyProperties(vo,personalInfo);
         personalInfo.setUserId(userId);

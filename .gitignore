@@ -36,4 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/node_modules/
+/frontend/node_modules/
 /captcha.png

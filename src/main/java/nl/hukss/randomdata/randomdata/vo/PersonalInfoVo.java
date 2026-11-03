@@ -39,4 +39,12 @@ public class PersonalInfoVo {
      * 经营范围
      */
     private String businessScope;
+    /**
+     * 厂房编号
+     */
+    private String factoryBuildingNo;
+    /**
+     * 不动产权证号
+     */
+    private String propertyCertificateNo;
 }

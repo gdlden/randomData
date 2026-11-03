@@ -87,6 +87,8 @@ class RandomDataControllerTests {
         assertThat(vo.getProvince()).isEqualTo("Chongqing");
         assertThat(vo.getCity()).isEqualTo("Chongqing");
         assertThat(vo.getAddress()).isEqualTo("Some Road");
+        assertThat(vo.getFactoryBuildingNo()).matches("[A-H]区\\d{2}栋-\\d{2}号厂房");
+        assertThat(vo.getPropertyCertificateNo()).matches("渝（20\\d{2}）重庆市不动产权第\\d{8}号");
 
         Long savedCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM personal_info", Long.class);
         assertThat(savedCount).isEqualTo(1L);
